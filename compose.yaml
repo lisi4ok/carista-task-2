@@ -1,0 +1,54 @@
+services:
+  php:
+    container_name: php
+    build:
+      context: .container
+      dockerfile: Dockerfile
+      args:
+        USER: ${USER:-user}
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        ENVIRONMENT: ${APP_ENV:-production}
+    restart: always
+
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+      - "443:443/udp" # HTTP/3
+    volumes:
+      - ./:/app
+      - caddy_data:/data
+      - caddy_config:/config
+    tty: true
+    networks:
+      - network
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    volumes:
+      - ./data/redis:/data/redis
+    networks:
+      - network
+
+  node:
+    container_name: node
+    image: node:alpine
+    working_dir: /app:delegated
+    volumes:
+      - ./:/app:delegated
+    ports:
+      - "${NODE_PORT}:${NODE_PORT}"
+    entrypoint: ['npm', 'run', 'dev']
+    networks:
+      - network
+
+networks:
+  network:
+
+volumes:
+  caddy_data:
+  caddy_config:

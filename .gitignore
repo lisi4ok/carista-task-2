@@ -26,4 +26,14 @@ yarn-error.log
 /.vscode
 /.zed
 
+#Data
 /data
+*.sqlite
+*.db
+
+#package managers lock
+*.lock
+*-lock.json
+
+# ssr
+/bootstrap/ssr
