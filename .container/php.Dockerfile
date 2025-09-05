@@ -56,6 +56,8 @@ RUN set -eux; \
         imap-dev \
         gmp-dev \
         imagemagick-dev \
+        nodejs  \
+        npm \
     ;
 
 RUN install-php-extensions \
@@ -118,6 +120,14 @@ RUN cp -if ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini; \
 RUN set -eux; \
     apk del .build-deps; \
     rm -rf /var/cache/apk/*;
+
+
+WORKDIR /app
+COPY . /app
+
+RUN npm install
+RUN npm run dev
+RUN php artisan schedule:work
 
 # Set user
 #RUN \

@@ -34,6 +34,3 @@ yarn-error.log
 #package managers lock
 *.lock
 *-lock.json
-
-# ssr
-/bootstrap/ssr
