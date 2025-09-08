@@ -1,28 +1,4 @@
 services:
-  php:
-    container_name: php
-    build:
-      context: .container
-      dockerfile: Dockerfile
-      args:
-        USER: ${USER:-user}
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
-        ENVIRONMENT: ${APP_ENV:-production}
-    restart: always
-
-    ports:
-      - "80:80" # HTTP
-      - "443:443" # HTTPS
-      - "443:443/udp" # HTTP/3
-    volumes:
-      - ./:/app
-      - caddy_data:/data
-      - caddy_config:/config
-    tty: true
-    networks:
-      - network
-
   postgres:
     container_name: postgres
     image: postgres:alpine
@@ -66,21 +42,28 @@ services:
     networks:
       - network
 
-  node:
-    container_name: node
-    image: node:alpine
-    working_dir: /app:delegated
+  queue-worker:
+    container_name: queue-worker
+    image: php:cli-alpine
+    working_dir: /app
+    command: php /app/artisan queue:work --queue=default --sleep=3 --tries=3 --max-time=3600
+    restart: always
     volumes:
-      - ./:/app:delegated
-    ports:
-      - "${NODE_PORT}:${NODE_PORT}"
-    entrypoint: ['npm', 'run', 'dev']
+      - ./:/app
     networks:
       - network
 
+  schedule-worker:
+    container_name: schedule-worker
+    image: php:cli-alpine
+    working_dir: /app
+    command: php /app/artisan schedule:work
+    restart: always
+    volumes:
+      - ./:/app
+    networks:
+      - network
+
+
 networks:
   network:
-
-volumes:
-  caddy_data:
-  caddy_config:
