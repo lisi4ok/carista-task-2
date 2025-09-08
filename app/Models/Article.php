@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -7,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Article extends Model
+final class Article extends Model
 {
     /** @use HasFactory<\Database\Factories\ArticleFactory> */
     use HasFactory, HasSlug;

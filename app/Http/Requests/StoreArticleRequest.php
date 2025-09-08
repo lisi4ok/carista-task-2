@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreArticleRequest extends FormRequest
+final class StoreArticleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +24,7 @@ class StoreArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+
         ];
     }
 }
